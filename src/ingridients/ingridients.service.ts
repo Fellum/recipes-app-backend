@@ -6,7 +6,6 @@ import { Ingridient } from './entities/ingridient.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IngridientFile } from './entities/ingridientFile.entity';
 import { File } from 'src/files/entities/file.entity';
-import { AddFileDto } from './dto/add-file.dto';
 
 @Injectable()
 export class IngridientsService {
@@ -15,39 +14,41 @@ export class IngridientsService {
     private ingridientsRepository: Repository<Ingridient>,
     @InjectRepository(IngridientFile)
     private ingridientFilesRepository: Repository<IngridientFile>,
+    @InjectRepository(File)
+    private filesRepository: Repository<File>
   ) {}
-
-  createFiles(files) {
-    return files.map(entry => {
-      const newEntry = new IngridientFile();
-      newEntry.id = entry.fileId;
-      newEntry.purpose = entry.purpose;
-      return newEntry;
-    });
-  }
 
   async create(createIngridientDto: CreateIngridientDto) {
     const {
       name,
-      callories,
+      calories,
       proteins,
       fats,
-      carbohydrates
+      carbohydrates,
+      files
     } = createIngridientDto;
+ 
+    await this.filesRepository.update(
+      {id: In(files.map(({fileId}) => fileId))}, 
+      {type: 'IngridientFile'}
+    );
+
+    const foundFiles = await this.ingridientFilesRepository.find({
+      where: {
+        id: In(files.map(file => file.fileId))
+      }
+    });
 
     return this.ingridientsRepository.save({
       name,
-      callories,
+      calories,
       proteins,
       fats,
-      carbohydrates
+      carbohydrates,
+      files: foundFiles
     });
   }
 
-  async addFile(addFileDto: AddFileDto, file: Express.Multer.File) {
-    const foundIngredient = await this.ingridientFilesRepository.findOneByOrFail({id: addFileDto.fileId});
-    
-  }
 
   async findAll() {
     const [values, count] = await this.ingridientsRepository.findAndCount({

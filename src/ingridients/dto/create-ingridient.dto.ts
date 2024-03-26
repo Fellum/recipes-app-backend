@@ -14,7 +14,7 @@ export class CreateIngridientDto {
     name: string;
 
     @IsNumber()
-    callories: number;
+    calories: number;
 
     @IsNumber()
     proteins: number;

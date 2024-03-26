@@ -10,7 +10,7 @@ export class Ingridient {
   name: string;
 
   @Column('decimal', { precision: 6, scale: 4 })
-  callories: number;
+  calories: number;
 
   @Column('decimal', { precision: 6, scale: 4 })
   proteins: number;
