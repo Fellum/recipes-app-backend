@@ -6,10 +6,10 @@ class FileItemDto {
     purpose: string;
 
     @IsNumber()
-    fileId: number;
+    id: number;
 }
 
-export class CreateIngridientDto {
+export class CreateIngredientDto {
     @IsString()
     name: string;
 

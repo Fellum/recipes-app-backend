@@ -1,6 +1,6 @@
 import { Entity, Column, OneToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Measure } from 'src/measures/entities/measure.entity';
-import { Ingridient } from 'src/ingridients/entities/ingridient.entity';
+import { Ingredient } from 'src/ingredients/entities/ingredient.entity';
 import { Recipe } from './recipe.entity';
 
 @Entity() 
@@ -14,8 +14,8 @@ export class RecipeEntry {
   @ManyToOne(() => Measure)
   measure: Measure;
 
-  @ManyToOne(() => Ingridient)
-  ingridient: Ingridient;
+  @ManyToOne(() => Ingredient)
+  ingredient: Ingredient;
 
   @Column('decimal', { precision: 6, scale: 4 })
   amount: number;

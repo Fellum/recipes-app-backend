@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany, ManyToOne, BaseEntity, ChildEntity } from 'typeorm';
-import { IngridientFile } from './ingridientFile.entity';
+import { IngredientFile } from './ingredientFile.entity';
 
 @Entity() 
-export class Ingridient {
+export class Ingredient {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,6 +21,6 @@ export class Ingridient {
   @Column('decimal', { precision: 6, scale: 4 })
   carbohydrates: number;
 
-  @OneToMany(() => IngridientFile, (file) => file.owner)
-  files: IngridientFile[];
+  @OneToMany(() => IngredientFile, (file) => file.owner)
+  files: IngredientFile[];
 }

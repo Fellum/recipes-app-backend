@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { IngridientsModule } from './ingridients/ingridients.module';
+import { IngredientsModule } from './ingredients/ingredients.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MeasuresModule } from './measures/measures.module';
 import { RecipesModule } from './recipes/recipes.module';
@@ -13,7 +13,7 @@ import { FilesModule } from './files/files.module';
       synchronize: true,
       autoLoadEntities: true
     }),
-    IngridientsModule,
+    IngredientsModule,
     MeasuresModule,
     RecipesModule,
     FilesModule,

@@ -6,7 +6,7 @@ import { Recipe } from './entities/recipe.entity';
 import { Repository } from 'typeorm';
 import { RecipeEntry } from './entities/recipeEntry.entity';
 import { Measure } from 'src/measures/entities/measure.entity';
-import { Ingridient } from 'src/ingridients/entities/ingridient.entity';
+import { Ingredient } from 'src/ingredients/entities/ingredient.entity';
 
 @Injectable()
 export class RecipesService {
@@ -20,11 +20,11 @@ export class RecipesService {
       const newEntry = new RecipeEntry();
       const measure = new Measure();
       measure.id = entry.measureId;
-      const ingridient = new Ingridient();
-      ingridient.id = entry.ingridientId;
+      const ingredient = new Ingredient();
+      ingredient.id = entry.ingredientId;
 
       newEntry.measure = measure;
-      newEntry.ingridient = ingridient;
+      newEntry.ingredient = ingredient;
       newEntry.amount = entry.measureId;
       return newEntry;
     });
@@ -44,7 +44,7 @@ export class RecipesService {
       relations: {
         entries: {
           measure: true,
-          ingridient: true
+          ingredient: true
         }
       }
     });
