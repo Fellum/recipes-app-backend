@@ -31,10 +31,9 @@ export class RecipesService {
   }
 
   async create(createRecipeDto: CreateRecipeDto) {
-    const recipe = await this.recipesRepository.save({
-      name: createRecipeDto.name
-    });
-    const recipeEntries = this.createEntries(createRecipeDto.entries);
+    const {entries, ...entityToSave} = createRecipeDto;
+    const recipe = await this.recipesRepository.save(entityToSave);
+    const recipeEntries = this.createEntries(entries);
     recipe.entries = recipeEntries;
     return this.recipesRepository.save(recipe);
   }
