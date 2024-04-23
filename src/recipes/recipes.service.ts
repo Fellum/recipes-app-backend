@@ -3,16 +3,22 @@ import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Recipe } from './entities/recipe.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { RecipeEntry } from './entities/recipeEntry.entity';
 import { Measure } from 'src/measures/entities/measure.entity';
 import { Ingredient } from 'src/ingredients/entities/ingredient.entity';
+import { File } from 'src/files/entities/file.entity';
+import { RecipeFile } from './entities/recipeFile.entity';
 
 @Injectable()
 export class RecipesService {
   constructor(
     @InjectRepository(Recipe)
-    private recipesRepository: Repository<Recipe>
+    private recipesRepository: Repository<Recipe>,
+    @InjectRepository(File)
+    private filesRepository: Repository<File>,
+    @InjectRepository(RecipeFile)
+    private recipeFilesRepository: Repository<RecipeFile>
   ) {}
 
   createEntries(entries) {
@@ -31,10 +37,23 @@ export class RecipesService {
   }
 
   async create(createRecipeDto: CreateRecipeDto) {
-    const {entries, ...entityToSave} = createRecipeDto;
-    const recipe = await this.recipesRepository.save(entityToSave);
+    const {entries, files, ...entityToSave} = createRecipeDto;
+
+    await this.filesRepository.update(
+      {id: In(files.map(({id}) => id))}, 
+      {type: 'RecipeFile'}
+    );
+
+    const foundFiles = await this.recipeFilesRepository.find({
+      where: {
+        id: In(files.map(file => file.id))
+      }
+    });
+    const recipe = await this.recipesRepository.save({...entityToSave});
+
     const recipeEntries = this.createEntries(entries);
     recipe.entries = recipeEntries;
+    recipe.files = foundFiles;
     return this.recipesRepository.save(recipe);
   }
 
@@ -51,7 +70,16 @@ export class RecipesService {
   }
 
   findOne(id: number) {
-    return this.recipesRepository.findOneByOrFail({id})
+    return this.recipesRepository.findOneOrFail({
+      relations: {
+        entries: {
+          measure: true,
+          ingredient: true,
+        },
+        files: true
+      },
+      where: {id}
+    })
   }
 
   async update(id: number, updateRecipeDto: UpdateRecipeDto) {

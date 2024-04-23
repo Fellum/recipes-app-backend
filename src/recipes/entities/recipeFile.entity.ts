@@ -7,6 +7,6 @@ export class RecipeFile extends File {
   @Column({name: 'purpose'})
   purpose: string;
 
-  @ManyToOne(() => Recipe, (recipe) => recipe.files, {})
+  @ManyToOne(() => Recipe, (recipe) => recipe.files, {cascade: true})
   owner: Recipe;
 }

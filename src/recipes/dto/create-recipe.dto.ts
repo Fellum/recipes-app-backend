@@ -1,4 +1,13 @@
-import { IsNumber, IsOptional } from "class-validator";
+import { Type } from "class-transformer";
+import { IsArray, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
+
+class FileItemDto {
+    @IsString()
+    purpose: string;
+
+    @IsNumber()
+    id: number;
+}
 
 export class CreateRecipeDto {
     name: string;
@@ -20,4 +29,9 @@ export class CreateRecipeDto {
     @IsOptional()
     @IsNumber()
     carbohydrates: number;
+
+    @IsArray()
+    @ValidateNested({each: true})
+    @Type(() => FileItemDto)
+    files: FileItemDto[];
 }
